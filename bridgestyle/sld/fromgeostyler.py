@@ -151,8 +151,14 @@ def _addValueToElement(element, value):
 
 
 def _addCssParameter(parent, name, value):
+    sub = SubElement(parent, "CssParameter", name=name)
+    #Now accepts a list of values as parameter
+    if isinstance(value,list):
+        for item in value:
+            if item is not None:
+                _addValueToElement(sub, item)
+        return sub
     if value is not None:
-        sub = SubElement(parent, "CssParameter", name=name)
         _addValueToElement(sub, value)
         return sub
 
@@ -312,12 +318,26 @@ def _lineSymbolizer(sl, graphicStrokeLayer=0):
         interval = sl.get("graphicStrokeInterval")
         dashOffset = sl.get("graphicStrokeOffset")
         size = graphicStroke[graphicStrokeLayer].get("size")
+        #This block did not expect to receive expressions instead of a float
         try:
-            fsize = float(size)
-            finterval = float(interval)
-            _addCssParameter(
-                stroke, "stroke-dasharray", "%s %s" % (str(fsize), str(finterval))
-            )
+            if isinstance(size,list) or isinstance(interval,list):
+                #Keeping the expressions
+                fsize = convertExpression(size)
+                finterval = convertExpression(interval)
+                _addCssParameter(stroke,"stroke-dasharray",[fsize,finterval])
+
+                #Passing only the floats
+                #if size[0]=='Div':
+                #    fsize = float(size[1]/size[2])
+                #if size[0]=='Mul':
+                #    fsize = float(size[1]*size[2])
+            else:
+                fsize = float(size)
+                finterval = float(interval)
+                _addCssParameter(
+                    stroke, "stroke-dasharray", "%s %s" % (
+                        str(fsize), str(finterval))
+                )
         except TypeError:
             pass
         _addCssParameter(stroke, "stroke-dashoffset", dashOffset)

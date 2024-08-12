@@ -636,6 +636,9 @@ def _fontMarkerSymbolizer(sl, opacity):
         symbolizer.update({"kind": "Mark",
                            "color": color,
                            "wellKnownName": name,
+                           #Trying to fix the use of Div
+                           #Why its not calculated in code instead of using Div expression
+                           #"size": float(float(size)/2)
                            "size": ["Div", size, 2]
                            # we use half of the size, since QGIS uses this as radius, not char height
                            })
