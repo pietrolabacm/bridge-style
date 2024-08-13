@@ -366,6 +366,11 @@ def _lineSymbolizer(sl, graphicStrokeLayer=0):
                 ]
             dasharray = " ".join([str(v) for v in tokens])
         _addCssParameter(stroke, "stroke-dasharray", dasharray)
+
+        #Adding support to dash offset
+        doffset = _symbolProperty(sl,"dashOffset")
+        if doffset is not None:
+            _addCssParameter(stroke, "stroke-dashoffset", doffset)
     if offset is not None:
         _addSubElement(root, "PerpendicularOffset", offset)
     return symbolizers

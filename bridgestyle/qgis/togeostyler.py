@@ -539,7 +539,9 @@ def _symbolProperty(symbolLayer, name, propertyConstant=-1, default=0):
             propertyConstant).asExpression()) or ""
     else:
         v = symbolLayer.properties().get(name, default)
-
+    #Handling a list that is handed as a string separated by ;
+    if name == 'customdash':
+        v = [i for i in v.split(';')]
     units = symbolLayer.properties().get(name + "_unit")
     if units is not None:
         v = _handleUnits(v, units, propertyConstant)
@@ -682,6 +684,19 @@ def _lineSymbolizer(sl, opacity):
         symbolizer["dasharray"] = "8 5 3 5 3 5"
     elif lineStyle != "solid":
         symbolizer["dasharray"] = "5 2"
+
+    #Added suport to custom dash array
+    if int(props.get('use_custom_dash')):
+        interval = _symbolProperty(
+            sl, "customdash", props.get('customdash'))
+        #Rounding the numbers to avoid the use of expressions (to int)
+        interval = " ".join([str(int(float(i)*interval[1])) for i in interval[2]])
+        offsetAlong = _symbolProperty(
+            sl, "dash_pattern_offset", props.get('dash_pattern_offset'))
+        if interval:
+            symbolizer["dasharray"] = interval
+        if offsetAlong:
+            symbolizer["dashOffset"] = offsetAlong
     return symbolizer
 
 
