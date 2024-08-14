@@ -449,14 +449,17 @@ def _markGraphic(sl):
         fill = SubElement(mark, "Fill")
         _addCssParameter(fill, "fill", color)
         _addCssParameter(fill, "fill-opacity", fillOpacity)
-    stroke = _addSubElement(mark, "Stroke")
     if strokeOpacity:
-        _addCssParameter(stroke, "stroke", strokeColor)
-        _addCssParameter(stroke, "stroke-width", strokeWidth)
-        _addCssParameter(stroke, "stroke-opacity", strokeOpacity)
+        #Added checking to avoid creating stroke without parameters
+        stroke = _addSubElement(mark, "Stroke")
+        if strokeColor is not None:
+            _addCssParameter(stroke, "stroke", strokeColor)
+        if strokeWidth is not None:
+            _addCssParameter(stroke, "stroke-width", strokeWidth)
+        if strokeOpacity is not None:
+            _addCssParameter(stroke, "stroke-opacity", strokeOpacity)
         if outlineDasharray is not None:
             _addCssParameter(stroke, "stroke-dasharray", outlineDasharray)
-
     return mark
 
 
