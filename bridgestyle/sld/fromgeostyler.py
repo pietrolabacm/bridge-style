@@ -605,7 +605,9 @@ def handleOperator(exp):
     if name == OGC_IS_LIKE:
         elem.attrib["wildCard"] = "%"
     if name == OGC_PROPERTYNAME:
-        elem.text = exp[1]
+        #ATTENTION
+        #Forcing lowercase in the sld, for our use case
+        elem.text = exp[1].lower()
     else:
         for operand in exp[1:]:
             if operand is None:
