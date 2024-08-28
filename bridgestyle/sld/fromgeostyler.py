@@ -449,8 +449,11 @@ def _markGraphic(sl):
         fill = SubElement(mark, "Fill")
         _addCssParameter(fill, "fill", color)
         _addCssParameter(fill, "fill-opacity", fillOpacity)
-    if strokeOpacity:
+    if strokeOpacity and (
+        strokeColor or strokeWidth or outlineDasharray):
         #Added checking to avoid creating stroke without parameters
+        #A stroke without parameters create a black hairline in the font
+        
         stroke = _addSubElement(mark, "Stroke")
         if strokeColor is not None:
             _addCssParameter(stroke, "stroke", strokeColor)
