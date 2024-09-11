@@ -17,7 +17,7 @@ from ..geostyler.custom_properties import WellKnownText
 _warnings = []
 
 
-def convert(geostyler, options=None):
+def convert(geostyler, options:list[str]=[]):
     global _warnings
     _warnings = []
     attribs = {
@@ -42,6 +42,10 @@ def convert(geostyler, options=None):
         featureTypeStyle.append(processTransformation(geostyler["transformation"]))
     for rule in geostyler.get("rules", []):
         featureTypeStyle.append(processRule(rule))
+    if 'lowercase' in options:
+        print('lowercase case run')
+        for prop in featureTypeStyle.iter("ogc:PropertyName"):
+            prop.text = prop.text.lower()
     if "blendMode" in geostyler:
         _addVendorOption(featureTypeStyle, "composite", geostyler["blendMode"])
 
@@ -608,9 +612,7 @@ def handleOperator(exp):
     if name == OGC_IS_LIKE:
         elem.attrib["wildCard"] = "%"
     if name == OGC_PROPERTYNAME:
-        #ATTENTION
-        #Forcing lowercase in the sld, for our use case
-        elem.text = exp[1].lower()
+        elem.text = exp[1]
     else:
         for operand in exp[1:]:
             if operand is None:
