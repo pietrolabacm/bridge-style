@@ -43,7 +43,6 @@ def convert(geostyler, options:list[str]=[]):
     for rule in geostyler.get("rules", []):
         featureTypeStyle.append(processRule(rule))
     if 'lowercase' in options:
-        print('lowercase case run')
         for prop in featureTypeStyle.iter("ogc:PropertyName"):
             prop.text = prop.text.lower()
     if "blendMode" in geostyler:
